@@ -37,6 +37,11 @@ export interface MenuProps
    */
   theme?: Theme;
 
+  initialShow?: {
+    x: number,
+    y: number
+  };
+
   /**
    * Animation is appended to
    * - `.contexify_willEnter-${given animation}`
@@ -86,6 +91,7 @@ export const Menu: React.FC<MenuProps> = ({
   id,
   theme,
   style,
+  initialShow,
   className,
   children,
   animation = 'fade',
@@ -95,9 +101,9 @@ export const Menu: React.FC<MenuProps> = ({
   ...rest
 }) => {
   const [state, setState] = useReducer(reducer, {
-    x: 0,
-    y: 0,
-    visible: false,
+    x: initialShow?.x ?? 0,
+    y: initialShow?.y ?? 0,
+    visible: !!initialShow,
     triggerEvent: {} as TriggerEvent,
     propsFromTrigger: null,
     willLeave: false,
@@ -235,7 +241,7 @@ export const Menu: React.FC<MenuProps> = ({
           visible: state.visible ? false : state.visible,
         }));
 
-    visibilityId.current = setTimeout(() => {
+    (visibilityId.current as any) = setTimeout(() => {
       isFn(onVisibilityChange) && onVisibilityChange(false);
       wasVisible.current = false;
     });
